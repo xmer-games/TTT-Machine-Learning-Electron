@@ -1,0 +1,7 @@
+{
+    "mongo": {
+        "db": "financials",
+        "user": "electronUser",
+        "pwd": "p2sB3MtsjvM2k2Lu"
+    }
+}

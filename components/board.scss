@@ -1,0 +1,46 @@
+body {
+    padding: 0;
+    margin: 0;
+    height: 100vh;
+}
+
+* {
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.Board {
+    display: flex;
+    flex-wrap: wrap;
+    height: 100%;   
+    padding: 5px;
+
+    & > .Cell {
+        flex: 1 1 33%;
+        border: 2px solid black;
+        height: 33.333%;
+
+        font-size: 22vw;
+        text-align: center;
+        line-height: 100%;
+        color: darkred;
+
+        cursor: pointer;
+
+        &:nth-child(3n - 2) {
+            border-left: none;
+        }
+
+        &:nth-child(3n + 0) {
+            border-right: none;
+        }
+
+        &:nth-child(-n+3) {
+            border-top: none;
+        }
+
+        &:nth-child(n+7) {
+            border-bottom: none;
+        }
+    }
+}
