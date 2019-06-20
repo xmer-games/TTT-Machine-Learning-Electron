@@ -7,7 +7,7 @@ const fs = require('fs');
 const net = new brain.NeuralNetwork();
 let mainWindow;
 
-var keepTraining = true;
+var keepTraining = false;
 
 // Saves the past boards and the computers decisions for future trainings
 const moves = [];
@@ -131,7 +131,7 @@ ipcMain.on('board:check', (e, unformated, auto) => {
     mainWindow.send('npcTurn', result);
     unformated[result] = "O";
 
-    moves.push({input: aiBoard, output: output.map((o, i) => i === result ? 1 : 0)});
+    moves.push({input: aiBoard, output: [...output.map((o, i) => i === result ? 1 : 0)]});
 
     // Check if the computer won, if so save these moves for the future
     if(checkBoard(unformated)) {
@@ -156,7 +156,7 @@ saveData = () => {
 clearData = () => {
     var freshData = [{
         "input": [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
-        "output": [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "output": [0, 0, 0, 0, 1, 0, 0, 0, 0],
     }]
     fs.writeFile('./train.json', JSON.stringify(freshData), err => {
         if(err)
@@ -169,7 +169,12 @@ clearData = () => {
 
 // Retrains the network
 retrain = () => {
+    if(!keepTraining)
+        return;
+
+    console.log("Training");
     net.train(JSON.parse(fs.readFileSync('./train.json')));
+    console.log("I'M READY!");
 }
 
 // Trains the network with the past moves
@@ -190,12 +195,6 @@ const mainMenuTemplate = [
                 label: "Train each game",
                 click() {
                     keepTraining = !keepTraining;
-                }
-            },
-            {
-                label: "Clear Data",
-                click() {
-                    clearData();
                 }
             },
             {
@@ -227,7 +226,13 @@ if(process.env.NODE_ENV !== 'production') {
             },
             {
                 role: 'reload'
-            }
+            },
+            {
+                label: "Clear Data",
+                click() {
+                    clearData();
+                }
+            },
         ]
     })
 }
